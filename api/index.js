@@ -17,6 +17,13 @@ app.use(express.json());
 // To test if the export works, comment out connectDB() temporarily
 connectDB().catch(err => console.error("Initial DB connection failed", err));
 
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "success", 
+    message: "Connect Backend is live!" 
+  });
+});
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Vercel accepted the export!" });
 });
