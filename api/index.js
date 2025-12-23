@@ -13,15 +13,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Move DB connection inside a light wrapper or handle it lazily
-// To test if the export works, comment out connectDB() temporarily
-connectDB().catch(err => console.error("Initial DB connection failed", err));
+// ✅ FIX: Use a middleware to connect to DB. 
+// This prevents the "Invalid Export" error by allowing the app to export immediately.
+let isConnected = false;
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+  next();
+});
 
 app.get("/", (req, res) => {
-  res.json({ 
-    status: "success", 
-    message: "Connect Backend is live!" 
-  });
+  res.json({ status: "success", message: "Connect Backend is live!" });
 });
 
 app.get("/api/health", (req, res) => {
@@ -31,5 +35,4 @@ app.get("/api/health", (req, res) => {
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
 
-// 2. Ensure this is the very last thing and it is a DEFAULT export
 export default app;
