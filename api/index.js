@@ -7,28 +7,38 @@ import geminiRoutes from "./routes/gemini.routes.js";
 import leadRoutes from "./routes/leads.routes.js";
 
 dotenv.config();
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// ✅ FIX: This middleware connects to the DB only when a request hits.
-// This allows Vercel to see the 'export default app' immediately.
+// DB connection middleware (safe for Vercel)
 app.use(async (req, res, next) => {
   try {
     await connectDB();
     next();
   } catch (err) {
-    console.error("DB Connection failed inside middleware:", err.message);
-    // Don't let the process crash; send a JSON error instead
-    res.status(500).json({ error: "Database Connection Error", message: err.message });
+    console.error("DB Connection failed:", err.message);
+    res.status(500).json({
+      error: "Database Connection Error",
+      message: err.message,
+    });
   }
 });
 
-app.get("/", (req, res) => res.json({ status: "success", message: "API is live" }));
-app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+app.get("/", (req, res) =>
+  res.json({ status: "success", message: "API is live" })
+);
+
+app.get("/api/health", (req, res) =>
+  res.json({ status: "ok" })
+);
 
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
 
-export default app;
+// ✅ REQUIRED by Vercel
+export default function handler(req, res) {
+  return app(req, res);
+}
