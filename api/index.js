@@ -1,7 +1,6 @@
 import dotenv from "dotenv"; // 1. Import dotenv
 import express from "express";
 import cors from "cors";
-import serverless from "serverless-http";
 
 import connectDB from "./utils/db.js";
 
@@ -31,5 +30,6 @@ app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/careers", careerRoutes);
 
-/* -------------------- EXPORT HANDLER -------------------- */
-export const handler = serverless(app);
+/* -------------------- VERCEL EXPORT -------------------- */
+// ✅ Vercel needs the express app instance exported as default
+export default app;
