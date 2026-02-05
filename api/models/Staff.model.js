@@ -10,18 +10,6 @@ const StaffSchema = new mongoose.Schema(
     companyName: {
       type: String,
       required: true,
-      enum: [
-        "Tatvan Research pvt. ltd. (Ahmedabad, Gujarat)",
-        "Jay Telecom (Mau, UP)",
-        "Harish Kitchen (Thane)",
-        "Dr. Juhi's Confidental Clinic (Thane)",
-        "Anna's Tiffin (Thane)",
-        "Subject Buddy (Mumbai)",
-        "The Fit Fork (Mumbai)",
-        "The Central App (Mumbai)",
-        "Kollect Care (Gurgaon)",
-        "GRG (Delhi)"
-      ]
     },
     email: {
       type: String,
