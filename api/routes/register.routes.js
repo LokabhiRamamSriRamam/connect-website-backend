@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
     // Validate companyName against exact allowed list
     const validCompanies = [
       "Tatvan Research pvt. ltd. (Ahmedabad, Gujarat)",
-      "Jay Telecom (Mau, UP)",
+      "JaiNex",
       "Harish Kitchen (Thane)",
       "Dr. Juhi's Confidental Clinic (Thane)",
       "Anna's Tiffin (Thane)",
