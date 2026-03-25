@@ -7,7 +7,8 @@ import geminiRoutes from "./api/routes/gemini.routes.js";
 import leadRoutes from "./api/routes/leads.routes.js";
 import careerRoutes from "./api/routes/careers.routes.js";
 import registerRoutes from "./api/routes/register.routes.js";
-import staffRoutes from "./api/routes/staff.routes.js";  // ✅ NEW
+import staffRoutes from "./api/routes/staff.routes.js";
+import saarthiRoutes from "./api/routes/saarthi.routes.js";
 
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/leads", leadRoutes);
 app.use("/api/careers", careerRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api/saarthi", saarthiRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

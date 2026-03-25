@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+//made the repo public
+//second time for the backend
+
 
 const StaffSchema = new mongoose.Schema(
   {

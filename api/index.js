@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import connectDB from "./utils/db.js";
-// Add this import after your existing imports
 import registerRoutes from "./routes/register.routes.js";
+import saarthiRoutes from "./routes/saarthi.routes.js";
 
 import geminiRoutes from "./routes/gemini.routes.js";
 import leadRoutes from "./routes/leads.routes.js";
@@ -40,8 +40,8 @@ app.get("/api/health", (req, res) =>
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
 
-// Add this route after your existing routes
 app.use("/api/register", registerRoutes);
+app.use("/api/saarthi", saarthiRoutes);
 
 // ✅ REQUIRED by Vercel
 export default function handler(req, res) {
