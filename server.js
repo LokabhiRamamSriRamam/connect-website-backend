@@ -2,13 +2,13 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 
-import connectDB from "./api/utils/db.js";
-import geminiRoutes from "./api/routes/gemini.routes.js";
-import leadRoutes from "./api/routes/leads.routes.js";
-import careerRoutes from "./api/routes/careers.routes.js";
-import registerRoutes from "./api/routes/register.routes.js";
-import staffRoutes from "./api/routes/staff.routes.js";
-import saarthiRoutes from "./api/routes/saarthi.routes.js";
+import connectDB from "./src/utils/db.js";
+import geminiRoutes from "./src/routes/gemini.routes.js";
+import leadRoutes from "./src/routes/leads.routes.js";
+import careerRoutes from "./src/routes/careers.routes.js";
+import registerRoutes from "./src/routes/register.routes.js";
+import staffRoutes from "./src/routes/staff.routes.js";
+import saarthiRoutes from "./src/routes/saarthi.routes.js";
 
 
 dotenv.config();
