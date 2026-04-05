@@ -1,10 +1,12 @@
 // Ported from Gemini to NVIDIA NIM (Llama 3.3 70B Instruct)
 
-const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
 const LLAMA_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 const MODEL_ID = "meta/llama-3.3-70b-instruct";
 
 export const runGemini = async (prompt) => {
+  // Read at call time — not at import time — so dotenv has already loaded by now
+  const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
+
   console.log("--- NVIDIA Llama 3.3 70B Call Initiated ---");
   console.log("API Key exists:", !!NVIDIA_API_KEY);
 
