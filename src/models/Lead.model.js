@@ -2,14 +2,29 @@ import mongoose from "mongoose";
 
 const LeadSchema = new mongoose.Schema(
   {
-    name: String,
+    name: { type: String, required: true },
     email: String,
     phone: String,
-    source: { type: String, default: "website" },
+    businessName: { type: String, default: "" },
+    source: {
+      type: String,
+      enum: [
+        "website",
+        "website_contact_form",
+        "referral",
+        "social_media",
+        "other",
+      ],
+      default: "website_contact_form",
+    },
     message: String,
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Lead ||
-  mongoose.model("Lead", LeadSchema);
+// Delete cached model to prevent stale schema issues across hot-reloads
+if (mongoose.models.Lead) {
+  delete mongoose.models.Lead;
+}
+
+export default mongoose.model("Lead", LeadSchema);

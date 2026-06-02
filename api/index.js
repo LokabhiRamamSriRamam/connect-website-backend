@@ -7,6 +7,8 @@ import saarthiRoutes from "../src/routes/saarthi.routes.js";
 
 import geminiRoutes from "../src/routes/gemini.routes.js";
 import leadRoutes from "../src/routes/leads.routes.js";
+import careerRoutes from "../src/routes/careers.routes.js";
+import staffRoutes from "../src/routes/staff.routes.js";
 
 dotenv.config();
 
@@ -39,7 +41,8 @@ app.get("/api/health", (req, res) =>
 
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
-
+app.use("/api/careers", careerRoutes);
+app.use("/api/staff", staffRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/saarthi", saarthiRoutes);
 
