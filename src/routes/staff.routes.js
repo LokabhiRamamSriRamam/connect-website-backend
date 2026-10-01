@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import Staff from "../models/Staff.model.js";
 
 const router = express.Router();
@@ -43,27 +44,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ GET /api/staff/:id - Get single staff
-router.get("/:id", async (req, res) => {
-  try {
-    const staff = await Staff.findById(req.params.id).select('-password');
-    
-    if (!staff) {
-      return res.status(404).json({ error: "Staff not found" });
-    }
-
-    res.json({
-      success: true,
-      staff
-    });
-
-  } catch (err) {
-    console.error("GET staff by ID error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ✅ GET /api/staff/stats - Staff statistics
+// ✅ GET /api/staff/stats - Staff statistics (must be registered before /:id)
 router.get("/stats", async (req, res) => {
   try {
     const stats = await Staff.aggregate([
@@ -91,6 +72,30 @@ router.get("/stats", async (req, res) => {
 
   } catch (err) {
     console.error("GET staff stats error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ GET /api/staff/:id - Get single staff
+router.get("/:id", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid staff id" });
+    }
+
+    const staff = await Staff.findById(req.params.id).select('-password');
+
+    if (!staff) {
+      return res.status(404).json({ error: "Staff not found" });
+    }
+
+    res.json({
+      success: true,
+      staff
+    });
+
+  } catch (err) {
+    console.error("GET staff by ID error:", err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import mongoose from "mongoose";
 
 import connectDB from "./src/utils/db.js";
 import geminiRoutes from "./src/routes/gemini.routes.js";
@@ -25,12 +26,25 @@ app.get("/", (req, res) => {
   res.json({ status: "Local backend running 🟢" });
 });
 
+app.get("/api/health", (req, res) =>
+  res.json({ status: "ok", db: mongoose.connection.readyState === 1 ? "connected" : "disconnected" })
+);
+
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/careers", careerRoutes);
 app.use("/api/register", registerRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/saarthi", saarthiRoutes);
+
+// Malformed JSON bodies and other uncaught errors → JSON, not Express's HTML page
+app.use((err, req, res, next) => {
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({ error: "Invalid JSON body" });
+  }
+  console.error("Unhandled error:", err);
+  res.status(err.status || 500).json({ error: "Internal server error" });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
