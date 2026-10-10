@@ -56,6 +56,7 @@ const LeadSchema = new mongoose.Schema(
       enum: [
         "website",
         "website_contact_form",
+        "screen_bazaar_test_drive",
         "referral",
         "social_media",
         "other",

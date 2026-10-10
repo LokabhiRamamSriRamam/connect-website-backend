@@ -126,6 +126,9 @@ export const sendContactCustomerConfirmation = async (lead) => {
   const firstName = oneLine(lead.name).split(" ")[0] || "there";
   const isSB = (lead.service || "").startsWith("Screen Bazaar");
   const brand = isSB ? "Screen Bazaar" : "Connect Gen AI";
+  // A test-drive lead already saw the product work — greeting them with "we've
+  // received your enquiry" would read as though we hadn't noticed.
+  const isTestDrive = lead.source === "screen_bazaar_test_drive";
 
   const rows = [
     ["Interested in", lead.service],
@@ -138,11 +141,19 @@ export const sendContactCustomerConfirmation = async (lead) => {
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
       <div style="background:linear-gradient(328deg,#1F30A0 19%,#914BFA 81%);background-color:#4B3FD0;padding:20px 24px">
-        <h2 style="color:#fff;margin:0;font-size:20px;font-weight:700">Thanks for reaching out, ${esc(firstName)}!</h2>
+        <h2 style="color:#fff;margin:0;font-size:20px;font-weight:700">${
+          isTestDrive
+            ? `Thanks for taking the test drive, ${esc(firstName)}!`
+            : `Thanks for reaching out, ${esc(firstName)}!`
+        }</h2>
         <p style="color:#eee5ff;margin:4px 0 0;font-size:13px">${esc(brand)} · Connect Gen AI</p>
       </div>
       <div style="padding:24px;color:#111827;font-size:15px;line-height:1.5">
-        <p style="margin:0 0 12px">We've received your enquiry${lead.service ? ` about <b>${esc(lead.service)}</b>` : ""}. Someone from our team will call you${lead.phone ? ` on <b>${esc(lead.phone)}</b>` : ""} within 24 hours.</p>
+        <p style="margin:0 0 12px">${
+          isTestDrive
+            ? `You just scheduled content across five virtual screens${lead.businessName ? ` for <b>${esc(lead.businessName)}</b>` : ""}. Setting up real ones works exactly the same way, and we do the install for you. Someone from our team will call you${lead.phone ? ` on <b>${esc(lead.phone)}</b>` : ""} within 24 hours to talk through your space.`
+            : `We've received your enquiry${lead.service ? ` about <b>${esc(lead.service)}</b>` : ""}. Someone from our team will call you${lead.phone ? ` on <b>${esc(lead.phone)}</b>` : ""} within 24 hours.`
+        }</p>
         ${
           rows.length
             ? `<p style="margin:16px 0 6px;font-weight:600;color:#374151">What you told us</p>
@@ -170,7 +181,11 @@ export const sendContactCustomerConfirmation = async (lead) => {
   await transporter.sendMail({
     from: `"${brand} · Connect Gen AI" <${process.env.SMTP_USER}>`,
     to: oneLine(lead.email),
-    subject: oneLine(`We've received your enquiry — ${brand}`),
+    subject: oneLine(
+      isTestDrive
+        ? `How was your test drive? — ${brand}`
+        : `We've received your enquiry — ${brand}`
+    ),
     html,
   });
 };
