@@ -26,26 +26,18 @@ router.post("/", async (req, res) => {
   try {
     const lead = await Lead.create(pick(req.body));
 
-    // Awaited so serverless (Vercel) doesn't freeze the function before the email goes out,
-    // but an email failure must never fail the lead — it's already saved.
-    let emailed = true;
-    try {
-      await sendContactLeadNotification(lead);
-    } catch (err) {
-      emailed = false;
-      console.error("Contact lead email notification failed:", err.message);
-    }
+    // Respond immediately — email is fire-and-forget. A broken SMTP config
+    // (expired app password etc.) must never time out the lead submission.
+    res.status(201).json({ success: true, id: lead._id });
 
-    // Customer's own confirmation — separate from the internal notification above.
+    sendContactLeadNotification(lead).catch((err) =>
+      console.error("Contact lead email notification failed:", err.message)
+    );
     if (lead.email) {
-      try {
-        await sendContactCustomerConfirmation(lead);
-      } catch (err) {
-        console.error("Customer confirmation email failed:", err.message);
-      }
+      sendContactCustomerConfirmation(lead).catch((err) =>
+        console.error("Customer confirmation email failed:", err.message)
+      );
     }
-
-    res.status(201).json({ success: true, id: lead._id, emailed });
   } catch (err) {
     if (err.name === "ValidationError") {
       const fields = Object.fromEntries(

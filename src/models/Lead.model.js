@@ -6,7 +6,7 @@ const PHONE_RE = /^\+?[\d\s\-().]{7,20}$/;
 
 const LeadSchema = new mongoose.Schema(
   {
-    name: { type: String, required: [true, "Name is required"], trim: true, maxlength: 100 },
+    name: { type: String, default: "", trim: true, maxlength: 100 },
     email: {
       type: String,
       trim: true,
