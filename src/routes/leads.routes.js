@@ -50,6 +50,28 @@ router.post("/", async (req, res) => {
   }
 });
 
+/**
+ * Public counter for the "first 50 customers" scheme on /get-in-touch.
+ *
+ * Counts Screen Bazaar leads only — the offer is signage-only, so a Vital or
+ * Saarthi enquiry must not eat a seat. Returns a bare {count, total} and
+ * nothing else: this is the one lead route a visitor's browser may call.
+ */
+const OFFER_TOTAL = 50;
+
+router.get("/count", async (req, res) => {
+  try {
+    const count = await Lead.countDocuments({
+      service: new RegExp("^Screen Bazaar"),
+    });
+    res.set("Cache-Control", "public, max-age=60");
+    res.json({ count: Math.min(count, OFFER_TOTAL), total: OFFER_TOTAL });
+  } catch (err) {
+    console.error("Lead count error:", err.message);
+    res.status(500).json({ error: "Could not read the count." });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const leads = await Lead.find().sort({ createdAt: -1 });
